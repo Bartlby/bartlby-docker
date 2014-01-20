@@ -5,7 +5,7 @@ FROM debian
 
 
 
-
+RUN echo "root:bartlby" | chpasswd
 
 
 
@@ -29,11 +29,12 @@ RUN cd /usr/local/src/bartlby-core && make install
 
 
 RUN sed -i -e"s/^mysql_pw=/mysql_pw=docker/" /opt/bartlby/etc/bartlby.cfg
+RUN sed -i -e"s/^user=bartlby/user=root/" /opt/bartlby/etc/bartlby.cfg
 RUN /etc/init.d/mysql stop; /etc/init.d/mysql start; echo "CREATE DATABASE bartlby " > CREA && mysql -u root --password=docker < CREA; cd /opt/bartlby/ && mysql -u root --password=docker bartlby < mysql.shema; exit 0
 
 # add PORTIER
 RUN echo "bartlbyp                9031/tcp                        #Bartlby Portier" >> /etc/services
-RUN echo "bartlbyp                stream  tcp     nowait.500      bartlby  ${BARTLBY_HOME}/bin/bartlby_portier ${BARTLBY_HOME}/etc/bartlby.cfg" >> /etc/inetd.conf
+RUN echo "bartlbyp                stream  tcp     nowait.500      bartlby  /opt/bartlby/bin/bartlby_portier /opt/bartlby/etc/bartlby.cfg" >> /etc/inetd.conf
 
 #checkout and compile PHP
 RUN cd /usr/local/src/ && git clone https://github.com/Bartlby/bartlby-php
@@ -49,7 +50,7 @@ RUN cd /var/www/bartlby-ui && git checkout development/stage
 
 RUN cd /usr/local/src/ && git clone https://github.com/Bartlby/bartlby-agent
 RUN cd /usr/local/src/bartlby-agent && ./autogen.sh
-RUN cd /usr/local/src/bartlby-agent && ./configure --enable-ssl
+RUN cd /usr/local/src/bartlby-agent && ./configure --enable-ssl --prefix=/opt/bartlby-agent
 
 RUN cd /usr/local/src/bartlby-agent && useradd bartlby
 RUN cd /usr/local/src/bartlby-agent && make install; exit 0

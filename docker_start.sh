@@ -8,7 +8,8 @@ chmod a+rwx /opt/bartlby/etc/bartlby.cfg
 rm /var/www/bartlby-ui/setup.php
 /opt/bartlby/bin/bartlby /opt/bartlby/etc/bartlby.cfg
 
-while( true ) do
-echo "alive"
-sleep 1;
+
+#wait for bartlby
+while ( true ) do
+sleep 1
 done
