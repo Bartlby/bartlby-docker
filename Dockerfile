@@ -1,5 +1,7 @@
 FROM debian
-#docker run -p 49080:80 -p 49022:22 -p 49030:9030 -p 49040:9040  -d bartlby
+#docker run -p 49080:80 -p 49022:22 -p 49030:9030 -p 49040:9040  -name "bartlbycore" -d bartlby
+#docker stop bartlbycore
+#docker start bartlbycore
 
 
 
