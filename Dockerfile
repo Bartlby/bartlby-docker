@@ -1,4 +1,5 @@
 FROM debian
+#docker run -p 49080:80  -d bartlby
 
 
 
@@ -8,15 +9,18 @@ FROM debian
 
 RUN   echo "mysql-server mysql-server/root_password password docker" | debconf-set-selections
 RUN   echo "mysql-server mysql-server/root_password_again password docker" | debconf-set-selections
-RUN apt-get --yes update
-RUN apt-get install -y libssl-dev libssh-dev libmysqlclient-dev mysql-server autoconf gcc apache2 php5-cli  libapache2-mod-php5  libsnmp-dev libtool make php5-dev git openbsd-inetd
+RUN  DEBIAN_FRONTEND=noninteractive apt-get --yes update
+RUN  DEBIAN_FRONTEND=noninteractive apt-get install -y libssl-dev libssh-dev libmysqlclient-dev mysql-server autoconf gcc apache2 php5-cli  libapache2-mod-php5  libsnmp-dev libtool make php5-dev git openbsd-inetd supervisor
 RUN sed -i -e"s/^bind-address\s*=\s*127.0.0.1/bind-address = 0.0.0.0/" /etc/mysql/my.cnf
 
 
 
 #checkout and compile core
 RUN cd /usr/local/src/ && git clone https://github.com/Bartlby/bartlby-core
+
+RUN cd /usr/local/src/bartlby-core && git checkout development/stage
 RUN cd /usr/local/src/bartlby-core && ./autogen.sh
+
 RUN cd /usr/local/src/bartlby-core && ./configure --prefix=/opt/bartlby --enable-ssl --enable-ssh --enable-nrpe --enable-snmp
 RUN cd /usr/local/src/bartlby-core && make
 RUN cd /usr/local/src/bartlby-core && make install
@@ -31,14 +35,18 @@ RUN echo "bartlbyp                stream  tcp     nowait.500      bartlby  ${BAR
 
 #checkout and compile PHP
 RUN cd /usr/local/src/ && git clone https://github.com/Bartlby/bartlby-php
+RUN cd /usr/local/src/bartlby-php && git checkout development/stage
 RUN cd /usr/local/src/bartlby-php && phpize
 RUN cd /usr/local/src/bartlby-php && ./configure
 RUN cd /usr/local/src/bartlby-php && make install
 RUN echo "extension=bartlby.so" > /etc/php5/apache2/conf.d/bartlby.ini
 #checkout UI
 RUN cd /var/www/ && git clone https://github.com/Bartlby/bartlby-ui/
+RUN cd /var/www/bartlby-ui && git checkout development/stage
+
 
 ADD docker_start.sh /opt/bartlby/docker_start.sh
+
 RUN chmod +x /opt/bartlby/docker_start.sh
 
 CMD ["/opt/bartlby/docker_start.sh"]
