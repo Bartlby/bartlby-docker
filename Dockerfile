@@ -1,5 +1,5 @@
 FROM debian
-#docker run -p 49080:80  -d bartlby
+#docker run -p 49080:80 -p 49022:22 -p 49030:9030 -p 49040:9040  -d bartlby
 
 
 
@@ -45,12 +45,22 @@ RUN cd /var/www/ && git clone https://github.com/Bartlby/bartlby-ui/
 RUN cd /var/www/bartlby-ui && git checkout development/stage
 
 
+RUN cd /usr/local/src/ && git clone https://github.com/Bartlby/bartlby-agent
+RUN cd /usr/local/src/bartlby-agent && ./autogen.sh
+RUN cd /usr/local/src/bartlby-agent && ./configure --enable-ssl
+
+RUN cd /usr/local/src/bartlby-agent && useradd bartlby
+RUN cd /usr/local/src/bartlby-agent && make install; exit 0
+RUN cd /usr/local/src/bartlby-agent && sh postinstall-pak; exit 0
+
+
+
 ADD docker_start.sh /opt/bartlby/docker_start.sh
 
 RUN chmod +x /opt/bartlby/docker_start.sh
 
 CMD ["/opt/bartlby/docker_start.sh"]
 
-EXPOSE 80
+EXPOSE 80 22 9030
 VOLUME /opt/bartlby/var
 VOLUME /var/www/
