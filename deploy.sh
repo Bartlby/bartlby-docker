@@ -78,8 +78,8 @@ sh postinstall-pak
 show "doing monitoring-plugins"
 cd /usr/local/src 
 git clone https://github.com/monitoring-plugins/monitoring-plugins.git
-cd monitoring-plugins/ 
-./autgen.sh
+cd monitoring-plugins
+./autogen.sh
 ./configure  --prefix=/opt/bartlby-agent/plugins/
 make install
 mv /opt/bartlby-agent/plugins/libexec/* /opt/bartlby-agent/plugins/
@@ -89,6 +89,16 @@ cd /usr/local/src/
 git clone https://github.com/Bartlby/bartlby-plugins
 cd /usr/local/src/bartlby-plugins 
 ./configure --prefix=/opt/bartlby-agent/plugins/
+make install
+
+
+#install bartlby-extensions
+
+cd /usr/local/src/
+git clone https://github.com/Bartlby/bartlby-extensions
+cd /usr/local/src/bartlby-extensions
+./autogen.sh
+./configure --prefix=/opt/bartlby-extensions
 make install
 
 #install pnp4nagios
@@ -104,9 +114,8 @@ make install-processperfdata
 
 show "patching process perfdata"
 cd /opt/pnp4nagios/libexec/
-
 wget https://raw2.github.com/Bartlby/bartlby-docker/master/process_perfdata.pl.patch
-patch -p1 < process_perfdata.pl.patch
+patch -f -p1 < process_perfdata.pl.patch
 
 
 show "applying default CFG"
