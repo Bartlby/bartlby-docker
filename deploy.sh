@@ -107,6 +107,17 @@ cd /opt/pnp4nagios/libexec/
 
 patch -p1 < process_perfdata.pl.patch
 
+
+show "applying default CFG"
+mkdir /var/www/bartlby-ui/rrd/
+mkdir /opt/bartlby/var/log/history/
+
+chmod a+rwx /opt/bartlby/var/log/history/
+chmod a+rwx /var/www/bartlby-ui/rrd/
+
+cd /var/www/bartlby-ui/
+ln -s /opt/pnp4nagios/var/perfdata pnp4data
+
 wget -O /etc/apache2/sites-available/default https://raw2.github.com/Bartlby/bartlby-docker/master/apache-default
 wget -O /opt/bartlby/etc/bartlby.cfg https://raw2.github.com/Bartlby/bartlby-docker/master/bartlby.cfg
 }
