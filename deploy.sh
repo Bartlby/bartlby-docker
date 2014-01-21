@@ -13,7 +13,7 @@ echo "mysql-server mysql-server/root_password_again password docker" | debconf-s
 DEBIAN_FRONTEND=noninteractive apt-get --yes update
 
 show "Installing packages"
-DEBIAN_FRONTEND=noninteractive apt-get install -y libssl-dev libssh-dev libmysqlclient-dev mysql-server autoconf gcc apache2 php5-cli  libapache2-mod-php5  libsnmp-dev libtool make php5-dev git openbsd-inetd supervisor openssh-server ncurses-dev libncursesw5-dev php-pear wget rrdtool
+DEBIAN_FRONTEND=noninteractive apt-get install -y libssl-dev libssh-dev libmysqlclient-dev mysql-server autoconf gcc apache2 php5-cli  libapache2-mod-php5  libsnmp-dev libtool make php5-dev git openbsd-inetd supervisor openssh-server ncurses-dev libncursesw5-dev php-pear wget rrdtool g++ cron nagios-plugins nagios-plugins
 sed -i -e"s/^bind-address\s*=\s*127.0.0.1/bind-address = 0.0.0.0/" /etc/mysql/my.cnf
 
 show "install ncurses"
@@ -75,15 +75,6 @@ useradd bartlby
 make install
 sh postinstall-pak
 
-show "doing monitoring-plugins"
-cd /usr/local/src 
-git clone https://github.com/monitoring-plugins/monitoring-plugins.git
-cd monitoring-plugins
-./autogen.sh
-./configure  --prefix=/opt/bartlby-agent/plugins/
-make install
-mv /opt/bartlby-agent/plugins/libexec/* /opt/bartlby-agent/plugins/
-
 show "doing bartlby-plugins"
 cd /usr/local/src/
 git clone https://github.com/Bartlby/bartlby-plugins
@@ -97,6 +88,7 @@ make install
 cd /usr/local/src/
 git clone https://github.com/Bartlby/bartlby-extensions
 cd /usr/local/src/bartlby-extensions
+git checkout development/stage
 ./autogen.sh
 ./configure --prefix=/opt/bartlby-extensions
 make install
@@ -115,7 +107,7 @@ make install-processperfdata
 show "patching process perfdata"
 cd /opt/pnp4nagios/libexec/
 wget https://raw2.github.com/Bartlby/bartlby-docker/master/process_perfdata.pl.patch
-patch -f -p1 < process_perfdata.pl.patch
+patch -p1 process_perfdata.pl < process_perfdata.pl.patch
 
 
 show "applying default CFG"
@@ -134,6 +126,17 @@ wget -O /var/www/bartlby-ui/ui-extra.conf https://raw2.github.com/Bartlby/bartlb
 
 chmod a+rwx /opt/bartlby/etc/bartlby.cfg /var/www/bartlby-ui/ui-extra.conf
 
+show "registrering cron job for pnp4nagios"
+
+echo "*/10 * * * *  (/opt/pnp4nagios/libexec/process_perfdata.pl  -b /opt/pnp4nagios//var/perfdata.log)" | crontab -
+
+rm /opt/pnp4nagios/share/install.php
+
+show "installing nagios-plugins aka monitoring-plugins"
+
+cp /usr/lib/nagios/plugins/* /opt/bartlby-agent/plugins/
+
+show "Congratulations your bartlby instance is up and running you have a core with all extensions"
 
 }
 $1
