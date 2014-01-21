@@ -1,5 +1,6 @@
 #!/bin/bash
 a2enmod rewrite #enable mod rewrite for pnp4nagios
+/etc/init.d/cron start
 /etc/init.d/mysql start
 /etc/init.d/apache2 start
 /etc/init.d/openbsd-inetd start
