@@ -104,7 +104,10 @@ make install-processperfdata
 
 show "patching process perfdata"
 cd /opt/pnp4nagios/libexec/
+
 patch -p1 < process_perfdata.pl.patch
 
+wget -O /etc/apache2/sites-available/default https://raw2.github.com/Bartlby/bartlby-docker/master/apache-default
+wget -O /opt/bartlby/etc/bartlby.cfg https://raw2.github.com/Bartlby/bartlby-docker/master/bartlby.cfg
 }
 $1
