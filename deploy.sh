@@ -13,7 +13,7 @@ echo "mysql-server mysql-server/root_password_again password docker" | debconf-s
 DEBIAN_FRONTEND=noninteractive apt-get --yes update
 
 show "Installing packages"
-DEBIAN_FRONTEND=noninteractive apt-get install -y libssl-dev libssh-dev libmysqlclient-dev mysql-server autoconf gcc apache2 php5-cli  libapache2-mod-php5  libsnmp-dev libtool make php5-dev git openbsd-inetd supervisor openssh-server ncurses-dev libncursesw5-dev php-pear
+DEBIAN_FRONTEND=noninteractive apt-get install -y libssl-dev libssh-dev libmysqlclient-dev mysql-server autoconf gcc apache2 php5-cli  libapache2-mod-php5  libsnmp-dev libtool make php5-dev git openbsd-inetd supervisor openssh-server ncurses-dev libncursesw5-dev php-pear wget rrdtool
 sed -i -e"s/^bind-address\s*=\s*127.0.0.1/bind-address = 0.0.0.0/" /etc/mysql/my.cnf
 
 show "install ncurses"
@@ -22,11 +22,13 @@ pecl install  ncurses
 show "installing bartlby-core"
 cd /usr/local/src/
 git clone https://github.com/Bartlby/bartlby-core
+cd /usr/local/src/bartlby-core
 git checkout development/stage
 ./autogen.sh
 ./configure --prefix=/opt/bartlby --enable-ssl --enable-ssh --enable-nrpe --enable-snmp
 make
 make install
+
 sed -i -e"s/^mysql_pw=/mysql_pw=docker/" /opt/bartlby/etc/bartlby.cfg
 sed -i -e"s/^user=bartlby/user=root/" /opt/bartlby/etc/bartlby.cfg
 /etc/init.d/mysql stop 
@@ -76,7 +78,7 @@ sh postinstall-pak
 show "doing monitoring-plugins"
 cd /usr/local/src 
 git clone https://github.com/monitoring-plugins/monitoring-plugins.git
-cd /usr/local/src/monitoring-plugins/ 
+cd monitoring-plugins/ 
 ./autgen.sh
 ./configure  --prefix=/opt/bartlby-agent/plugins/
 make install
@@ -89,8 +91,20 @@ cd /usr/local/src/bartlby-plugins
 ./configure --prefix=/opt/bartlby-agent/plugins/
 make install
 
+#install pnp4nagios
+cd /usr/local/src
+wget http://docs.pnp4nagios.org/_media/dwnld/pnp4nagios-head.tar.gz
+tar xzvf pnp4nagios-head.tar.gz
+cd pnp4nagios-head
+./configure  --prefix=/opt/pnp4nagios --with-nagios-user=bartlby --with-nagios-group=root
+make all
+make install
+make install-html
+make install-processperfdata
 
-
+show "patching process perfdata"
+cd /opt/pnp4nagios/libexec/
+patch -p1 < process_perfdata.pl.patch
 
 }
 $1

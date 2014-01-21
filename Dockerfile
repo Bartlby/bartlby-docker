@@ -8,9 +8,15 @@ FROM debian
 ADD docker_start.sh /opt/bartlby/docker_start.sh
 RUN chmod +x /opt/bartlby/docker_start.sh
 
+
+
+ADD process_perfdata.pl.patch /usr/local/src/
 ADD deploy.sh /opt/bartlby/deploy.sh
 RUN chmod +x /opt/bartlby/deploy.sh
 RUN /opt/bartlby/deploy.sh system_setup
+
+
+ADD apache-default /etc/apache2/sites-available/default
 
 CMD ["/opt/bartlby/docker_start.sh"]
 

@@ -1,0 +1,56 @@
+<VirtualHost *:80>
+        ServerAdmin webmaster@localhost
+
+        DocumentRoot /var/www
+        <Directory />
+                Options FollowSymLinks
+                AllowOverride None
+        </Directory>
+        <Directory /var/www/>
+                Options Indexes FollowSymLinks MultiViews
+                AllowOverride None
+                Order allow,deny
+                allow from all
+        </Directory>
+
+        ScriptAlias /cgi-bin/ /usr/lib/cgi-bin/
+        <Directory "/usr/lib/cgi-bin">
+                AllowOverride None
+                Options +ExecCGI -MultiViews +SymLinksIfOwnerMatch
+                Order allow,deny
+                Allow from all
+        </Directory>
+
+
+Alias /pnp4nagios "/opt/pnp4nagios//share"
+
+<Directory "/opt/pnp4nagios//share">
+        #
+        # Use the same value as defined in nagios.conf
+        #
+        <IfModule mod_rewrite.c>
+                # Turn on URL rewriting
+                RewriteEngine On
+                Options symLinksIfOwnerMatch
+                # Installation directory
+                RewriteBase /pnp4nagios/
+                # Protect application and system files from being viewed
+                RewriteRule "^(?:application|modules|system)/" - [F]
+                # Allow any files or directories that exist to be displayed directly
+                RewriteCond "%{REQUEST_FILENAME}" !-f
+                RewriteCond "%{REQUEST_FILENAME}" !-d
+                # Rewrite all other URLs to index.php/URL
+                RewriteRule "^.*$" "index.php/$0" [PT]
+        </IfModule>
+        </Directory>
+
+
+
+        ErrorLog ${APACHE_LOG_DIR}/error.log
+
+        # Possible values include: debug, info, notice, warn, error, crit,
+        # alert, emerg.
+        LogLevel warn
+
+        CustomLog ${APACHE_LOG_DIR}/access.log combined
+</VirtualHost>
