@@ -68,6 +68,7 @@ show "doing bartlby-agent"
 cd /usr/local/src/
 git clone https://github.com/Bartlby/bartlby-agent
 cd /usr/local/src/bartlby-agent
+git checkout development/stage
 ./autogen.sh
  ./configure --enable-ssl --prefix=/opt/bartlby-agent
 
