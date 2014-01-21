@@ -30,6 +30,10 @@ mysql -u root --password=docker bartlby < mysql.shema;
 echo "bartlbyp                9031/tcp                        #Bartlby Portier" >> /etc/services
 echo "bartlbyp                stream  tcp     nowait.500      bartlby  /opt/bartlby/bin/bartlby_portier /opt/bartlby/etc/bartlby.cfg" >> /etc/inetd.conf
 
+
+echo "bartlbyv                9032/tcp                        #Bartlby Portier" >> /etc/services
+echo "bartlbyv                stream  tcp     nowait.500      bartlby  /opt/bartlby-agent/bartlby_agent_v2 /opt/bartlby-agent/bartlby.cfg" >> /etc/inetd.conf
+
 cd /usr/local/src/ && git clone https://github.com/Bartlby/bartlby-php
 cd /usr/local/src/bartlby-php
 git checkout development/stage
@@ -52,14 +56,19 @@ useradd bartlby
 make install
 sh postinstall-pak
 
- cd /usr/local/src && git clone https://github.com/monitoring-plugins/monitoring-plugins.git
- cd /usr/local/src/monitoring-plugins/ && ./autgen.sh
- cd /usr/local/src/monitoring-plugins/ && ./configure  --prefix=/opt/bartlby-agent/plugins/
- cd /usr/local/src/monitoring-plugins/ && make install
- cd /usr/local/src/monitoring-plugins/ && mv /opt/bartlby-agent/plugins/libexec/* /opt/bartlby-agent/plugins/
- cd /usr/local/src && git clone https://github.com/Bartlby/bartlby-plugins
- cd /usr/local/src/bartlby-plugins && ./configure --prefix=/opt/bartlby-agent/plugins/
- cd /usr/local/src/bartlby-plugins && make install
+cd /usr/local/src 
+git clone https://github.com/monitoring-plugins/monitoring-plugins.git
+cd /usr/local/src/monitoring-plugins/ 
+./autgen.sh
+./configure  --prefix=/opt/bartlby-agent/plugins/
+make install
+mv /opt/bartlby-agent/plugins/libexec/* /opt/bartlby-agent/plugins/
+cd /usr/local/src/
+git clone https://github.com/Bartlby/bartlby-plugins
+cd /usr/local/src/bartlby-plugins 
+./configure --prefix=/opt/bartlby-agent/plugins/
+make install
+
 
 
 
