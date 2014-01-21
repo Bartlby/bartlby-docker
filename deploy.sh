@@ -20,7 +20,12 @@ make
 make install
 sed -i -e"s/^mysql_pw=/mysql_pw=docker/" /opt/bartlby/etc/bartlby.cfg
 sed -i -e"s/^user=bartlby/user=root/" /opt/bartlby/etc/bartlby.cfg
-/etc/init.d/mysql stop; /etc/init.d/mysql start; echo "CREATE DATABASE bartlby " > CREA && mysql -u root --password=docker < CREA; cd /opt/bartlby/ && mysql -u root --password=docker bartlby < mysql.shema; exit 0
+/etc/init.d/mysql stop 
+/etc/init.d/mysql start
+echo "CREATE DATABASE bartlby " > CREA 
+mysql -u root --password=docker < CREA
+cd /opt/bartlby/ 
+mysql -u root --password=docker bartlby < mysql.shema;
 
 echo "bartlbyp                9031/tcp                        #Bartlby Portier" >> /etc/services
 echo "bartlbyp                stream  tcp     nowait.500      bartlby  /opt/bartlby/bin/bartlby_portier /opt/bartlby/etc/bartlby.cfg" >> /etc/inetd.conf
