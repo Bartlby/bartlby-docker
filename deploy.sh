@@ -22,7 +22,24 @@ gpuf () {
    git reset --hard FETCH_HEAD
    git clean -df
 }
+app_start() {
+	a2enmod rewrite #enable mod rewrite for pnp4nagios
+	/etc/init.d/cron start
+	/etc/init.d/mysql start
+	/etc/init.d/apache2 start
+	/etc/init.d/openbsd-inetd start
+	/etc/init.d/ssh start
+	chmod -v -R a+rwx /var/www/bartlby-ui
+	chmod a+rwx /opt/bartlby/etc/bartlby.cfg
+	rm /var/www/bartlby-ui/setup.php
+	/opt/bartlby/bin/bartlby /opt/bartlby/etc/bartlby.cfg
 
+
+	while ( true ) do
+		sleep 10
+	done
+
+}
 system_upgrade() {
 	BACKUP_DIR="/tmp/$$.btl-upgrade/"
 	mkdir $BACKUP_DIR
@@ -257,3 +274,4 @@ system_setup()  {
 
 }
 $1
+
