@@ -5,10 +5,6 @@ FROM debian
 
 
 
-ADD docker_start.sh /opt/bartlby/docker_start.sh
-RUN chmod +x /opt/bartlby/docker_start.sh
-
-
 
 ADD deploy.sh /opt/bartlby/deploy.sh
 RUN chmod +x /opt/bartlby/deploy.sh
