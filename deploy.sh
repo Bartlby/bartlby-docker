@@ -270,6 +270,13 @@ system_setup()  {
 
 	cp /usr/lib/nagios/plugins/* /opt/bartlby-agent/plugins/
 
+
+	wget -O /opt/bartlby/populate_sample_data.php  https://raw2.github.com/Bartlby/bartlby-docker/master/populate_sample_data.php
+	cd /opt/bartlby/
+	/opt/bartlby/bin/bartlby /opt/bartlby/etc/bartlby.cfg
+	php populate_sample_data.php
+	killall -SIGUSR1 bartlby
+
 	show "Congratulations your bartlby instance is up and running you have a core with all extensions"
 
 }
