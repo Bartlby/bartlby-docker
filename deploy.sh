@@ -40,6 +40,21 @@ app_start() {
 	done
 
 }
+system_version() {
+
+echo "FIXME";
+#cd /usr/local/src/
+#cd bartlby-core
+
+#LOCAL_SHA=$(git rev-parse HEAD);
+#CUR_SHA=$(wget -q -O /dev/stdout https://api.github.com/repos/Bartlby/bartlby-core/git/refs/heads/development/stage|grep sha|awk '{ gsub(/[,"]/, "", $2); print $2 }');
+
+#if [ "$LOCAL_SHA" != "$CUR_SHA" ];
+
+
+
+	
+}
 system_upgrade() {
 	BACKUP_DIR="/tmp/$$.btl-upgrade/"
 	mkdir $BACKUP_DIR
