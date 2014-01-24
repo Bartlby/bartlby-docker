@@ -16,4 +16,5 @@ CMD ["/opt/bartlby/deploy.sh", "app_start"]
 
 EXPOSE 80 22 9030
 VOLUME /opt/bartlby/var
+VOLUME	/usr/local/src
 VOLUME /var/www/
