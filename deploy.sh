@@ -71,7 +71,7 @@ system_upgrade() {
 
 	DEBIAN_FRONTEND=noninteractive apt-get install -y $PACKAGES_REQ
 
-
+	killall -SIGUSR1 bartlby 
 	# extensions
 	show "updating bartlby-extensions"
 	cd /usr/local/src/bartlby-extensions/ 
