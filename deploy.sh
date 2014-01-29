@@ -72,7 +72,19 @@ system_upgrade() {
 	DEBIAN_FRONTEND=noninteractive apt-get install -y $PACKAGES_REQ
 
 	killall -SIGUSR1 bartlby 
-	# extensions
+	
+	
+
+
+	#core
+	show "updating core"
+	cd /usr/local/src/bartlby-core/ 
+	git stash 
+	git checkout development/stage 
+	git stash 
+	gpuf origin 
+	
+# extensions
 	show "updating bartlby-extensions"
 	cd /usr/local/src/bartlby-extensions/ 
 	git stash 
@@ -86,15 +98,9 @@ system_upgrade() {
 	make all
 	make install 
 	
-
-
-	#core
-	show "updating core"
-	cd /usr/local/src/bartlby-core/ 
-	git stash 
-	git checkout development/stage 
-	git stash 
-	gpuf origin 
+	show "Building Core"
+	cd /usr/local/src/bartlby-core/ 	
+	
 	./autogen.sh 
 	#reconfigure
 	./config.status 
