@@ -1,6 +1,6 @@
 #!/bin/bash
 
-PACKAGES_REQ="libssl-dev libssh-dev libmysqlclient-dev mysql-server autoconf gcc apache2 php5-cli  libapache2-mod-php5  libsnmp-dev libtool make php5-dev git openbsd-inetd supervisor openssh-server ncurses-dev libncursesw5-dev php-pear wget rrdtool g++ cron nagios-plugins nagios-plugins libfile-slurp-perl php5-sqlite"
+PACKAGES_REQ="libssl-dev libssh-dev libmysqlclient-dev mysql-server autoconf gcc apache2 php5-cli  libapache2-mod-php5  libsnmp-dev libtool make php5-dev git openbsd-inetd supervisor openssh-server ncurses-dev libncursesw5-dev php-pear wget rrdtool g++ cron nagios-plugins nagios-plugins libfile-slurp-perl php5-sqlite php5-mysql"
 
 show() {
   echo -e "\n\e[1;32m>>> $1\e[00m"
@@ -82,7 +82,8 @@ system_upgrade() {
 	
 	./autogen.sh 
 	./config.status 
-	make clean all 
+	make clean
+	make all
 	make install 
 	
 
