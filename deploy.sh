@@ -284,23 +284,24 @@ system_setup()  {
 
 	show "registrering cron job for pnp4nagios"
 
-
-	echo "*/10 * * * *  (/opt/pnp4nagios/libexec/process_perfdata.pl  -b /opt/pnp4nagios//var/perfdata.log)" | crontab -
+	echo "" > CRONJOBS
+	echo "*/10 * * * *  (/opt/pnp4nagios/libexec/process_perfdata.pl  -b /opt/pnp4nagios//var/perfdata.log)" >> CRONJOBS
 	show "registering cron jobs for SiteManager";
-	echo "*/2 * * * * (cd /var/www/bartlby-ui/extensions/; php automated.php username=admin password=password script=SiteManager/cron.php sync=SHM)"|crontab -
-	echo "*/5 * * * * (cd /var/www/bartlby-ui/extensions/; php automated.php username=admin password=password script=SiteManager/cron.php sync=DB)"|crontab -
-	echo "*/10 * * * * (cd /var/www/bartlby-ui/extensions/; php automated.php username=admin password=password script=SiteManager/cron.php sync=GENCONF)"|crontab -
-	echo "*/10 * * * * (cd /var/www/bartlby-ui/extensions/; php automated.php username=admin password=password script=SiteManager/cron.php sync=FOLDERS)"|crontab -
-	echo "0 0 * * * (cd /var/www/bartlby-ui/extensions/; php automated.php username=admin password=password script=SiteManager/cron.php sync=CLEANUP)"|crontab -
+	echo "*/2 * * * * (cd /var/www/bartlby-ui/extensions/; php automated.php username=admin password=password script=SiteManager/cron.php sync=SHM)" >> CRONJOBS
+	echo "*/5 * * * * (cd /var/www/bartlby-ui/extensions/; php automated.php username=admin password=password script=SiteManager/cron.php sync=DB)" >> CRONJOBS
+	echo "*/10 * * * * (cd /var/www/bartlby-ui/extensions/; php automated.php username=admin password=password script=SiteManager/cron.php sync=GENCONF)" >> CRONJOBS
+	echo "*/10 * * * * (cd /var/www/bartlby-ui/extensions/; php automated.php username=admin password=password script=SiteManager/cron.php sync=FOLDERS)" >> CRONJOBS
+	echo "0 0 * * * (cd /var/www/bartlby-ui/extensions/; php automated.php username=admin password=password script=SiteManager/cron.php sync=CLEANUP)" >> CRONJOBS
 	
 	show "registering cron jobs for autoReports";
-	echo "0 2 * * * (cd /var/www/bartlby-ui/extensions/; php automated.php username=admin password=password script=AutoReports/cron.php wich=daily)"|crontab -
-	echo "0 2 * * 7 (cd /var/www/bartlby-ui/extensions/; php automated.php username=admin password=password script=AutoReports/cron.php wich=weekly)"|crontab -
+	echo "0 2 * * * (cd /var/www/bartlby-ui/extensions/; php automated.php username=admin password=password script=AutoReports/cron.php wich=daily)" >> CRONJOBS
+	echo "0 2 * * 7 (cd /var/www/bartlby-ui/extensions/; php automated.php username=admin password=password script=AutoReports/cron.php wich=weekly)" >> CRONJOBS
 
 	show "registering cron jobs for OcL";
-	echo "0 */1 * * * (cd /var/www/bartlby-ui/extensions/; php automated.php username=admin password=password script=OcL/cron.php)"|crontab -
+	echo "0 */1 * * * (cd /var/www/bartlby-ui/extensions/; php automated.php username=admin password=password script=OcL/cron.php)" >> CRONJOBS
 	
 	
+	cat CRONJOBS|crontab -
 
 
 
