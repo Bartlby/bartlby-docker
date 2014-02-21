@@ -318,6 +318,8 @@ system_setup()  {
 	php populate_sample_data.php
 	killall -SIGUSR1 bartlby
 
+
+	chmod -v -R a+rwx /var/www/bartlby-ui
 	show "Congratulations your bartlby instance is up and running you have a core with all extensions"
 
 }
