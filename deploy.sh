@@ -152,6 +152,10 @@ system_upgrade() {
 	/etc/init.d/openbsd-inetd restart 
 	/etc/init.d/apache2 restart 
 
+
+	chmod -R a+rwx /var/www/bartlby-ui/
+	show "upgrade upgrade script :) for next run:"
+	wget https://raw2.github.com/Bartlby/bartlby-docker/master/deploy.sh /opt/bartlby/deploy.sh
 	show "UPGRADE DONE!"
 	show "Backup is located in $BACKUP_DIR including mysql dump and config files"
 
