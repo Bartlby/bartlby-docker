@@ -2,6 +2,13 @@
 
 PACKAGES_REQ="libssl-dev libssh-dev libmysqlclient-dev mysql-server autoconf gcc apache2 php5-cli  libapache2-mod-php5  libsnmp-dev libtool make php5-dev git openbsd-inetd supervisor openssh-server ncurses-dev libncursesw5-dev php-pear wget rrdtool g++ cron nagios-plugins nagios-plugins libfile-slurp-perl php5-sqlite php5-mysql php-net-smtp php-mail php-mail-mime"
 
+
+export BARTLBY_ENV_AUTO_INSTALL=1
+export BARTLBY_ENV_MYSQL_USER=root
+export BARTLBY_ENV_MYSQL_DB=bartlby
+export BARTLBY_ENV_MYSQL_PASSWORD=docker
+export BARTLBY_ENV_MYSQL_HOST=localhost
+
 show() {
   echo -e "\n\e[1;32m>>> $1\e[00m"
 }
