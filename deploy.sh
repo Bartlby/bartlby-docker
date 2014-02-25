@@ -4,10 +4,10 @@ PACKAGES_REQ="libssl-dev libssh-dev libmysqlclient-dev mysql-server autoconf gcc
 
 
 export BARTLBY_ENV_AUTO_INSTALL=1
-export BARTLBY_ENV_MYSQL_USER=root
-export BARTLBY_ENV_MYSQL_DB=bartlby
-export BARTLBY_ENV_MYSQL_PASSWORD=docker
-export BARTLBY_ENV_MYSQL_HOST=localhost
+export BARTLBY_ENV_MYSQL_USER="root"
+export BARTLBY_ENV_MYSQL_DB="bartlby"
+export BARTLBY_ENV_MYSQL_PASSWORD="docker"
+export BARTLBY_ENV_MYSQL_HOST="localhost"
 
 show() {
   echo -e "\n\e[1;32m>>> $1\e[00m"
