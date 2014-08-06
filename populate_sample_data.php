@@ -18,7 +18,8 @@ $srv_obj = array(
         "server_ssh_passphrase" => "",
         "server_ssh_username" => "",
         "server_dead" => 0,
-        "enabled_triggers" => "");
+        "enabled_triggers" => "",
+        "default_service_type" => 1);
 
 $add_server=bartlby_add_server($btl->RES, $srv_obj);
 $btl->installPackage("default-pkg", $add_server, NULL, NULL);
