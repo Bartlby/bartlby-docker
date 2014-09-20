@@ -300,6 +300,8 @@ system_setup()  {
 	show "registering cron jobs for SiteManager";
 	echo "*/2 * * * * (cd /var/www/bartlby-ui/extensions/; php automated.php username=admin password=password script=SiteManager/cron.php sync=SHM)" >> CRONJOBS
 	echo "*/5 * * * * (cd /var/www/bartlby-ui/extensions/; php automated.php username=admin password=password script=SiteManager/cron.php sync=DB)" >> CRONJOBS
+	echo "*/5 * * * * (cd /var/www/bartlby-ui/extensions/; php automated.php username=admin password=password script=SiteManager/cron.php sync=INIT)" >> CRONJOBS
+	echo "*/5 * * * * (cd /var/www/bartlby-ui/extensions/; php automated.php username=admin password=password script=SiteManager/cron.php sync=RESTART)" >> CRONJOBS
 	echo "*/10 * * * * (cd /var/www/bartlby-ui/extensions/; php automated.php username=admin password=password script=SiteManager/cron.php sync=GENCONF)" >> CRONJOBS
 	echo "*/10 * * * * (cd /var/www/bartlby-ui/extensions/; php automated.php username=admin password=password script=SiteManager/cron.php sync=FOLDERS)" >> CRONJOBS
 	echo "0 0 * * * (cd /var/www/bartlby-ui/extensions/; php automated.php username=admin password=password script=SiteManager/cron.php sync=CLEANUP)" >> CRONJOBS
