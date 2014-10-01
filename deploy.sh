@@ -201,7 +201,7 @@ system_upgrade() {
 		cd bui-ng
 		bash ./setup.sh
 
-	
+		touch /node_patch_installed
 	fi;
 	
 	cd /usr/local/src/bui-ng
