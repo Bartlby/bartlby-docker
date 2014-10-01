@@ -167,7 +167,58 @@ system_upgrade() {
 	show "Backup is located in $BACKUP_DIR including mysql dump and config files"
 
 
+	if [ !-f "/node_patch_installed" ];
+	then
+		cd /usr/local/src/
+		wget http://nodejs.org/dist/v0.11.14/node-v0.11.14.tar.gz
+		tar xzvf node-v0.11.14.tar.gz 
+		cd node-v0.11.14
+		./configure --prefix=/opt/nodejs/
+		make 
+		make install
 
+		echo 'export PATH=$PATH:/opt/nodejs/bin/' > /etc/profile.d/node.sh
+		chmod a+rwx /etc/profile.d/node.sh
+
+		#build tools
+		npm install -g node-gyp nan
+
+
+		cd /usr/local/src
+		git clone https://github.com/Bartlby/bui-ng.git bui-ng
+
+
+		cd /usr/local/src
+		git clone https://github.com/Bartlby/bartlby-nodejs.git bartlby-nodejs
+		cd bartlby-nodejs
+		npm install -g node-gyp
+		npm --verbose --unsafe-perm build .
+		npm  -g --verbose --unsafe-perm install .
+
+
+		cd /usr/local/src
+		git clone https://github.com/Bartlby/bui-ng.git bui-ng
+		cd bui-ng
+		bash ./setup.sh
+
+	
+	fi;
+	
+	cd /usr/local/src/bui-ng
+	git stash
+	git checkout master
+	gpuf origin 
+	bash setup.sh
+	
+	cd /usr/local/src/bartlby-nodejs
+	git stash
+	git checkout master
+	gpuf origin 
+	npm --verbose --unsafe-perm build .
+	npm  -g --verbose --unsafe-perm install .
+	
+	
+	
 
 }
 system_setup()  {
