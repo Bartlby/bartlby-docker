@@ -222,7 +222,7 @@ system_upgrade() {
 	show "Backup is located in $BACKUP_DIR including mysql dump and config files"
 
 
-	install_update_node;
+	
 	
 	
 	
@@ -392,7 +392,7 @@ system_setup()  {
 
 	chmod -v -R a+rwx /var/www/bartlby-ui
 	
-	install_update_node;
+	
 	
 	show "Congratulations your bartlby instance is up and running you have a core with all extensions"
 
