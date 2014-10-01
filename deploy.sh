@@ -90,6 +90,7 @@ install_update_node() {
 		git clone https://github.com/Bartlby/bartlby-nodejs.git bartlby-nodejs
 		cd bartlby-nodejs
 		npm install -g node-gyp
+		npm install
 		npm --verbose --unsafe-perm build .
 		npm  -g --verbose --unsafe-perm install .
 
@@ -97,6 +98,7 @@ install_update_node() {
 		cd /usr/local/src
 		git clone https://github.com/Bartlby/bui-ng.git bui-ng
 		cd bui-ng
+		npm install
 		bash ./setup.sh
 
 		touch /opt/bartlby/patches/NODE
@@ -106,12 +108,14 @@ install_update_node() {
 		git stash
 		git checkout master
 		gpuf origin 
+		npm install
 		bash setup.sh
 	
 		cd /usr/local/src/bartlby-nodejs
 		git stash
 		git checkout master
 		gpuf origin 
+		npm install
 		npm --verbose --unsafe-perm build .
 		npm  -g --verbose --unsafe-perm install .
 	fi;
