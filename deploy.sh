@@ -77,6 +77,7 @@ install_update_node() {
 		echo 'export PATH=$PATH:/opt/nodejs/bin/' > /etc/profile.d/node.sh
 		chmod a+rwx /etc/profile.d/node.sh
 
+		. /etc/profile.d/node.sh
 		#build tools
 		npm install -g node-gyp nan
 
@@ -100,7 +101,7 @@ install_update_node() {
 
 		touch /opt/bartlby/patches/NODE
 	else
-	
+		. /etc/profile.d/node.sh
 		cd /usr/local/src/bui-ng
 		git stash
 		git checkout master
