@@ -253,7 +253,7 @@ system_setup()  {
 	cd /usr/local/src/bartlby-core
 	git checkout development/stage
 	./autogen.sh
-	./configure --prefix=/opt/bartlby --enable-ssl --enable-ssh --enable-nrpe --enable-snmp
+	./configure --prefix=/opt/bartlby --enable-ssl --enable-ssh --enable-nrpe --enable-snmp  $CONFIGURE_ADDON
 	make
 	make install
 
