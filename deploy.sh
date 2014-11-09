@@ -221,7 +221,7 @@ system_upgrade() {
 
 	chmod -R a+rwx /var/www/bartlby-ui/
 	show "upgrade upgrade script :) for next run:"
-	wget -O  /opt/bartlby/deploy.sh https://raw2.github.com/Bartlby/bartlby-docker/master/deploy.sh
+	wget -O  /opt/bartlby/deploy.sh https://raw.githubusercontent.com/Bartlby/bartlby-docker/master/deploy.sh
 	show "UPGRADE DONE!"
 	show "Backup is located in $BACKUP_DIR including mysql dump and config files"
 
