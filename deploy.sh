@@ -335,7 +335,7 @@ system_setup()  {
 
 	show "patching process perfdata"
 	cd /opt/pnp4nagios/libexec/
-	wget https://raw2.github.com/Bartlby/bartlby-docker/master/process_perfdata.pl.patch
+	wget https://raw.githubusercontent.com/Bartlby/bartlby-docker/master/process_perfdata.pl.patch
 	patch -p1 process_perfdata.pl < process_perfdata.pl.patch
 
 
@@ -349,9 +349,9 @@ system_setup()  {
 	cd /var/www/bartlby-ui/
 	ln -s /opt/pnp4nagios/var/perfdata pnp4data
 
-	wget -O /etc/apache2/sites-available/default https://raw2.github.com/Bartlby/bartlby-docker/master/apache-default
-	wget -O /opt/bartlby/etc/bartlby.cfg https://raw2.github.com/Bartlby/bartlby-docker/master/bartlby.cfg
-	wget -O /var/www/bartlby-ui/ui-extra.conf https://raw2.github.com/Bartlby/bartlby-docker/master/ui-extra.conf
+	wget -O /etc/apache2/sites-available/default https://raw.githubusercontent.com/Bartlby/bartlby-docker/master/apache-default
+	wget -O /opt/bartlby/etc/bartlby.cfg https://raw.githubusercontent.com/Bartlby/bartlby-docker/master/bartlby.cfg
+	wget -O /var/www/bartlby-ui/ui-extra.conf https://raw.githubusercontent.com/Bartlby/bartlby-docker/master/ui-extra.conf
 
 	chmod a+rwx /opt/bartlby/etc/bartlby.cfg /var/www/bartlby-ui/ui-extra.conf
 
@@ -387,7 +387,7 @@ system_setup()  {
 	cp /usr/lib/nagios/plugins/* /opt/bartlby-agent/plugins/
 
 
-	wget -O /opt/bartlby/populate_sample_data.php  https://raw2.github.com/Bartlby/bartlby-docker/master/populate_sample_data.php
+	wget -O /opt/bartlby/populate_sample_data.php  https://raw.githubusercontent.com/Bartlby/bartlby-docker/master/populate_sample_data.php
 	cd /opt/bartlby/
 	/opt/bartlby/bin/bartlby /opt/bartlby/etc/bartlby.cfg
 	php populate_sample_data.php
