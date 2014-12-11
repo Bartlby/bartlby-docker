@@ -1,13 +1,12 @@
 {
   "AWSEBDockerrunVersion": "1",
   "Image": {
-	"Name": "bartlby/bartlby"
+	"Name": "debian",
+	"Update": "true"
 	},
   "Ports": [
     {
-      "ContainerPort": "80",
-      "ContainerPort": "9031",
-      "ContainerPort": "143"
+      "ContainerPort": [ "80", "143", "9031", "9030" ]
 
     }
   ]
