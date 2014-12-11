@@ -2,11 +2,11 @@
   "AWSEBDockerrunVersion": "1",
   "Image": {
 	"Name": "bartlby/bartlby"
-	}
+	},
   "Ports": [
     {
-      "ContainerPort": "80"
-      "ContainerPort": "9031"
+      "ContainerPort": "80",
+      "ContainerPort": "9031",
       "ContainerPort": "143"
 
     }
