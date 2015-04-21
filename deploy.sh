@@ -174,7 +174,7 @@ system_upgrade() {
 		mkdir build;
 	fi;
 	cd build
-	cmake ..
+	cmake -DPLUGIN_DIR="/opt/bartlby-agent/plugins/" -DBARTLBY_USER="root" -DMYSQL_HOST="localhost" -DMYSQL_USER=root -DMYSQL_PASS="docker" -DMYSQL_DB=bartlby -DCMAKE_INSTALL_PREFIX:PATH=/opt/bartlby -DFULL_FEATURES=1 ..
 	make clean all 
 	show "stopping current core" 
 	killall -SIGUSR1 bartlby 
