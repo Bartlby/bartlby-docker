@@ -169,7 +169,7 @@ system_upgrade() {
 	show "Building Core"
 	cd /usr/local/src/bartlby-core/ 
 	git clean -fd	
-	if [ !-d build ];
+	if [ ! -d build ];
 	then
 		mkdir build;
 	fi;
