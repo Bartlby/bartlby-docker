@@ -357,9 +357,13 @@ system_setup()  {
 	cd /var/www/bartlby-ui/
 	ln -s /opt/pnp4nagios/var/perfdata pnp4data
 
-	wget -O /etc/apache2/sites-available/default https://raw.githubusercontent.com/Bartlby/bartlby-docker/master/apache-default
+	wget -O /etc/apache2/sites-available/000-default.conf https://raw.githubusercontent.com/Bartlby/bartlby-docker/master/apache-default
 	wget -O /opt/bartlby/etc/bartlby.cfg https://raw.githubusercontent.com/Bartlby/bartlby-docker/master/bartlby.cfg
 	wget -O /var/www/bartlby-ui/ui-extra.conf https://raw.githubusercontent.com/Bartlby/bartlby-docker/master/ui-extra.conf
+
+	#patch php ini
+	sed -i -e"s/^short_open_tag\s*=\s*Off/short_open_tag = On/" /etc/php5/apache2/php.ini
+	sed -i -e"s/^short_open_tag\s*=\s*Off/short_open_tag = On/" /etc/php5/cli/php.ini
 
 	chmod a+rwx /opt/bartlby/etc/bartlby.cfg /var/www/bartlby-ui/ui-extra.conf
 
@@ -410,4 +414,3 @@ system_setup()  {
 
 }
 $1
-
