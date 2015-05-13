@@ -136,7 +136,8 @@ system_upgrade() {
 	cp -pva /var/www/bartlby-ui/store/ $BACKUP_DIR/store/ 
 	mysqldump -u root --password=docker bartlby > $BACKUP_DIR/mysql.dump 
 	
-
+	apt-get clean && apt-get update
+	
 	DEBIAN_FRONTEND=noninteractive apt-get install -y $PACKAGES_REQ
 
 	killall -SIGUSR1 bartlby 
