@@ -1,6 +1,6 @@
 #!/bin/bash
 
-PACKAGES_REQ="libjson0-dev libjson0 libssl-dev libssh-dev libmysqlclient-dev mysql-server autoconf gcc apache2 php5-cli  libapache2-mod-php5  libsnmp-dev libtool make php5-dev git openbsd-inetd supervisor openssh-server ncurses-dev libncursesw5-dev php-pear wget rrdtool g++ cron nagios-plugins nagios-plugins libfile-slurp-perl php5-sqlite php5-mysql php-net-smtp php-mail php-mail-mime vim php5-mcrypt php5-curl libcurl4-openssl-dev"
+PACKAGES_REQ="libjson0-dev libjson0 libssl-dev libssh-dev libmysqlclient-dev mysql-server autoconf gcc apache2 php5-cli  libapache2-mod-php5  libsnmp-dev libtool make php5-dev git openbsd-inetd supervisor openssh-server ncurses-dev libncursesw5-dev php-pear wget rrdtool g++ cron nagios-plugins nagios-plugins libfile-slurp-perl php5-sqlite php5-mysql php-net-smtp php-mail php-mail-mime vim php5-mcrypt php5-curl libcurl4-openssl-dev cmake"
 
 
 export BARTLBY_ENV_AUTO_INSTALL=1
