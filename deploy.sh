@@ -1,6 +1,6 @@
 #!/bin/bash
 
-PACKAGES_REQ="python-pip python-dev"
+PACKAGES_REQ="python-pip python-dev git"
 
 
 show() {
