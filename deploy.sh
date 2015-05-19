@@ -63,6 +63,13 @@ system_upgrade() {
 	apt-get clean && apt-get update
 	DEBIAN_FRONTEND=noninteractive apt-get install -y $PACKAGES_REQ
 	pip install ansible
+	
+	if [ ! -d /usr/local/src/bartlby-ansible ];
+	then
+	cd /usr/local/src
+	git clone https://github.com/Bartlby/bartlby-ansible
+	fi
+	
 	show "updating ansible roles/playbooks"
 	cd /usr/local/src/bartlby-ansible/ 
 	git stash 
