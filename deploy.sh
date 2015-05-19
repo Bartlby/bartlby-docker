@@ -1,15 +1,7 @@
 #!/bin/bash
 
-PACKAGES_REQ="libjson0-dev libjson0 libssl-dev libssh-dev libmysqlclient-dev mysql-server autoconf gcc apache2 php5-cli  libapache2-mod-php5  libsnmp-dev libtool make php5-dev git openbsd-inetd supervisor openssh-server ncurses-dev libncursesw5-dev php-pear wget rrdtool g++ cron nagios-plugins nagios-plugins libfile-slurp-perl php5-sqlite php5-mysql php-net-smtp php-mail php-mail-mime vim php5-mcrypt php5-curl libcurl4-openssl-dev cmake liblua5.2-dev"
+PACKAGES_REQ="python-pip python-dev"
 
-
-#up1 - 1
-
-export BARTLBY_ENV_AUTO_INSTALL=1
-export BARTLBY_ENV_MYSQL_USER="root"
-export BARTLBY_ENV_MYSQL_DB="bartlby"
-export BARTLBY_ENV_MYSQL_PASSWORD="docker"
-export BARTLBY_ENV_MYSQL_HOST="localhost"
 
 show() {
   echo -e "\n\e[1;32m>>> $1\e[00m"
@@ -65,173 +57,27 @@ echo "FIXME";
 
 	
 }
-install_update_node() {
-	if [ ! -f "/opt/bartlby/patches/NODE" ];
-	then
-		cd /usr/local/src/
-		wget http://nodejs.org/dist/v0.11.14/node-v0.11.14.tar.gz
-		tar xzvf node-v0.11.14.tar.gz 
-		cd node-v0.11.14
-		./configure --prefix=/opt/nodejs/
-		make 
-		make install
 
-		echo 'export PATH=$PATH:/opt/nodejs/bin/' > /etc/profile.d/node.sh
-		chmod a+rwx /etc/profile.d/node.sh
-
-		. /etc/profile.d/node.sh
-		#build tools
-		npm install -g node-gyp nan
-
-
-		cd /usr/local/src
-		git clone https://github.com/Bartlby/bui-ng.git bui-ng
-
-
-		cd /usr/local/src
-		git clone https://github.com/Bartlby/bartlby-nodejs.git bartlby-nodejs
-		cd bartlby-nodejs
-		npm install -g node-gyp
-		npm install
-		npm --verbose --unsafe-perm build .
-		npm  -g --verbose --unsafe-perm install .
-
-
-		cd /usr/local/src
-		git clone https://github.com/Bartlby/bui-ng.git bui-ng
-		cd bui-ng
-		npm install
-		bash ./setup.sh
-
-		touch /opt/bartlby/patches/NODE
-	else
-		. /etc/profile.d/node.sh
-		cd /usr/local/src/bui-ng
-		git stash
-		git checkout master
-		gpuf origin 
-		npm install
-		bash setup.sh
-	
-		cd /usr/local/src/bartlby-nodejs
-		git stash
-		git checkout master
-		gpuf origin 
-		npm install
-		npm --verbose --unsafe-perm build .
-		npm  -g --verbose --unsafe-perm install .
-	fi;
-	
-}
 system_upgrade() {
-	BACKUP_DIR="/tmp/$$.btl-upgrade/"
-	mkdir $BACKUP_DIR
-
-	show "System will be upgraded to latest development/stage"
-	show "backup is located in: $BACKUP_DIR"
-	
-	cp -pva /opt/bartlby/etc/bartlby.cfg $BACKUP_DIR/ 
-	cp -pva /var/www/bartlby-ui/ui-extra.conf $BACKUP_DIR/ 
-	cp -pva /var/www/bartlby-ui/rights/ $BACKUP_DIR/rights/ 
-	cp -pva /var/www/bartlby-ui/store/ $BACKUP_DIR/store/ 
-	mysqldump -u root --password=docker bartlby > $BACKUP_DIR/mysql.dump 
 	
 	apt-get clean && apt-get update
-	
 	DEBIAN_FRONTEND=noninteractive apt-get install -y $PACKAGES_REQ
-
-	killall -SIGUSR1 bartlby 
-	
-	
-
-
-	#core
-	show "updating core"
-	cd /usr/local/src/bartlby-core/ 
+	pip install ansible
+	show "updating ansible roles/playbooks"
+	cd /usr/local/src/bartlby-ansible/ 
 	git stash 
-	git checkout development/stage 
-	git stash 
-	gpuf origin 
-	
-# extensions
-	show "updating bartlby-extensions"
-	cd /usr/local/src/bartlby-extensions/ 
-	git stash 
-	git checkout development/stage 
+	git checkout  master
 	git stash 
 	gpuf origin 
 	
 
-
-	./autogen.sh 
-	./config.status 
-	make clean
-	make all
-	make install 
+	echo "[local]" > local
+	echo "localhost" >> local
+	ansible-galaxy install geerlingguy.apache
+	ansible-galaxy install geerlingguy.php-pecl
+ 	ansible-galaxy install geerlingguy.mysql
 	
-	show "Building Core"
-	cd /usr/local/src/bartlby-core/ 
-	git clean -fd	
-	if [ ! -d build ];
-	then
-		mkdir build;
-	fi;
-	cd build
-	cmake -DPLUGIN_DIR="/opt/bartlby-agent/plugins/" -DBARTLBY_USER="root" -DMYSQL_HOST="localhost" -DMYSQL_USER=root -DMYSQL_PASS="docker" -DMYSQL_DB=bartlby -DCMAKE_INSTALL_PREFIX:PATH=/opt/bartlby -DFULL_FEATURES=1 ..
-	make clean all 
-	show "stopping current core" 
-	killall -SIGUSR1 bartlby 
-	sleep 2 
-	show "installing new binarys" 
-	make install 
-	show "you ll be guided threw the upgrade follow the instructions"
-	show "MYSQL DATA (if you have not changed anything)"
-	show "User: root, Password: docker, host: localhost, DB: bartlby"
-	bash postinstall-pak 
-
-	#php
-
-	show "updating php module"
-	cd /usr/local/src/bartlby-php/ 
-	git stash 
-	git checkout development/stage 
-	git stash 
-	gpuf origin 
-	phpize 
-	./configure 
-	make install 
-
-
-	show "updating UI:"
-	cd /var/www/bartlby-ui/ 
-	git stash 
-	git checkout development/stage 
-	gpuf origin 
-	show "restoring store/ folder"
-	cp -pva $BACKUP_DIR/store/* /var/www/bartlby-ui/store/ 
-	chmod -R a+rwx /var/www/bartlby-ui 
-	show "redoing pnp4nagios" 
-	cd /var/www/bartlby-ui/ 
-	ln -s /opt/pnp4nagios/var/perfdata pnp4data 
-
-	show "updating agent"
-	cd /usr/local/src/bartlby-agent 
-	git stash 
-	git checkout development/stage 
-	gpuf origin 
-	./autogen.sh 
-	./config.status 
-	make clean all install 
-
-	/etc/init.d/openbsd-inetd restart 
-	/etc/init.d/apache2 restart 
-
-
-	chmod -R a+rwx /var/www/bartlby-ui/
-	show "upgrade upgrade script :) for next run:"
-	wget -O  /opt/bartlby/deploy.sh https://raw.githubusercontent.com/Bartlby/bartlby-docker/master/deploy.sh
-	show "UPGRADE DONE!"
-	show "Backup is located in $BACKUP_DIR including mysql dump and config files"
+	ansible-playbook -i local -c local playbooks/bartlby-devbox.yml
 
 
 	
@@ -243,172 +89,8 @@ system_upgrade() {
 system_setup()  {
 	show "Setting root password to 'bartlby'"
 	echo "root:bartlby" | chpasswd
-	show "setting mysql password of root to 'docker'";
-	echo "mysql-server mysql-server/root_password password docker" | debconf-set-selections
-	echo "mysql-server mysql-server/root_password_again password docker" | debconf-set-selections
-	DEBIAN_FRONTEND=noninteractive apt-get --yes update
-
-	show "Installing packages"
-	DEBIAN_FRONTEND=noninteractive apt-get install -y $PACKAGES_REQ
-	sed -i -e"s/^bind-address\s*=\s*127.0.0.1/bind-address = 0.0.0.0/" /etc/mysql/my.cnf
-
-	show "install ncurses"
-	pecl install  ncurses	
-
-	show "installing bartlby-core"
-	cd /usr/local/src/
-	git clone https://github.com/Bartlby/bartlby-core
-	cd /usr/local/src/bartlby-core
-	git checkout development/stage
-	mkdir build
-	cd build
-	cmake -DPLUGIN_DIR="/opt/bartlby-agent/plugins/" -DBARTLBY_USER="root" -DMYSQL_HOST="localhost" -DMYSQL_USER=root -DMYSQL_PASS="docker" -DMYSQL_DB=bartlby -DCMAKE_INSTALL_PREFIX:PATH=/opt/bartlby -DFULL_FEATURES=1 ..
-	make
-	make install
-
-	sed -i -e"s/^mysql_pw=/mysql_pw=docker/" /opt/bartlby/etc/bartlby.cfg
-	sed -i -e"s/^user=bartlby/user=root/" /opt/bartlby/etc/bartlby.cfg
-	/etc/init.d/mysql stop 
-	/etc/init.d/mysql start
-	echo "CREATE DATABASE bartlby " > CREA 
-	mysql -u root --password=docker < CREA
-	cd /opt/bartlby/ 
-	mysql -u root --password=docker bartlby < mysql.shema;
-	show "default DB imported username: admin password: password"
-
-	show "registering inetd services, portier, agentv2"
-	echo "bartlbyp                9031/tcp                        #Bartlby Portier" >> /etc/services
-	echo "bartlbyp                stream  tcp     nowait.500      bartlby  /opt/bartlby/bin/bartlby_portier /opt/bartlby/etc/bartlby.cfg" >> /etc/inetd.conf
-	echo "bartlbyv                9032/tcp                        #Bartlby Portier" >> /etc/services
-	echo "bartlbyv                stream  tcp     nowait.500      bartlby  /opt/bartlby-agent/bartlby_agent_v2 /opt/bartlby-agent/bartlby.cfg" >> /etc/inetd.conf
-
-
-	show "doing bartlby-php module"
-	cd /usr/local/src/ && git clone https://github.com/Bartlby/bartlby-php
-	cd /usr/local/src/bartlby-php
-	git checkout development/stage
-	phpize
-	./configure
-	make install
-
-	show "enabling php extensions ncurses, bartlby"
-	echo "extension=bartlby.so" > /etc/php5/apache2/conf.d/bartlby.ini
-	echo "extension=ncurses.so" > /etc/php5/apache2/conf.d/ncurses.ini
-
-	show "doing bartlby-ui"
-	cd /var/www/
-	git clone https://github.com/Bartlby/bartlby-ui/
-	cd /var/www/bartlby-ui
-	git checkout development/stage
-
-	show "doing bartlby-agent"
-	cd /usr/local/src/
-	git clone https://github.com/Bartlby/bartlby-agent
-	cd /usr/local/src/bartlby-agent
-	git checkout development/stage
-	./autogen.sh
-	 ./configure --enable-ssl --prefix=/opt/bartlby-agent
-
-	useradd bartlby
-	make install
-	sh postinstall-pak
-
-	show "doing bartlby-plugins"
-	cd /usr/local/src/
-	git clone https://github.com/Bartlby/bartlby-plugins
-	cd /usr/local/src/bartlby-plugins 
-	./configure --prefix=/opt/bartlby-agent/plugins/
-	make install
-
-
-	#install bartlby-extensions
-
-	cd /usr/local/src/
-	git clone https://github.com/Bartlby/bartlby-extensions
-	cd /usr/local/src/bartlby-extensions
-	git checkout development/stage
-	./autogen.sh
-	./configure --prefix=/opt/bartlby-extensions
-	make install
-
-	#install pnp4nagios
-	cd /usr/local/src
-	wget http://docs.pnp4nagios.org/_media/dwnld/pnp4nagios-head.tar.gz
-	tar xzvf pnp4nagios-head.tar.gz
-	cd pnp4nagios-head
-	./configure  --prefix=/opt/pnp4nagios --with-nagios-user=bartlby --with-nagios-group=root
-	make all
-	make install
-	make install-html
-	make install-processperfdata
-
-	show "patching process perfdata"
-	cd /opt/pnp4nagios/libexec/
-	wget https://raw.githubusercontent.com/Bartlby/bartlby-docker/master/process_perfdata.pl.patch
-	patch -p1 process_perfdata.pl < process_perfdata.pl.patch
-
-
-	show "applying default CFG"
-	mkdir /var/www/bartlby-ui/rrd/
-	mkdir /opt/bartlby/var/log/history/
-
-	chmod a+rwx /opt/bartlby/var/log/history/
-	chmod a+rwx /var/www/bartlby-ui/rrd/
-
-	cd /var/www/bartlby-ui/
-	ln -s /opt/pnp4nagios/var/perfdata pnp4data
-
-	wget -O /etc/apache2/sites-available/000-default.conf https://raw.githubusercontent.com/Bartlby/bartlby-docker/master/apache-default
-	wget -O /opt/bartlby/etc/bartlby.cfg https://raw.githubusercontent.com/Bartlby/bartlby-docker/master/bartlby.cfg
-	wget -O /var/www/bartlby-ui/ui-extra.conf https://raw.githubusercontent.com/Bartlby/bartlby-docker/master/ui-extra.conf
-
-	#patch php ini
-	sed -i -e"s/^short_open_tag\s*=\s*Off/short_open_tag = On/" /etc/php5/apache2/php.ini
-	sed -i -e"s/^short_open_tag\s*=\s*Off/short_open_tag = On/" /etc/php5/cli/php.ini
-
-	chmod a+rwx /opt/bartlby/etc/bartlby.cfg /var/www/bartlby-ui/ui-extra.conf
-
-	show "registrering cron job for pnp4nagios"
-
-	echo "" > CRONJOBS
-	echo "*/10 * * * *  (/opt/pnp4nagios/libexec/process_perfdata.pl  -b /opt/pnp4nagios//var/perfdata.log)" >> CRONJOBS
-	show "registering cron jobs for SiteManager";
-	echo "*/2 * * * * (cd /var/www/bartlby-ui/extensions/; php automated.php username=admin password=password script=SiteManager/cron.php sync=SHM)" >> CRONJOBS
-	echo "*/5 * * * * (cd /var/www/bartlby-ui/extensions/; php automated.php username=admin password=password script=SiteManager/cron.php sync=DB)" >> CRONJOBS
-	echo "*/5 * * * * (cd /var/www/bartlby-ui/extensions/; php automated.php username=admin password=password script=SiteManager/cron.php sync=INIT)" >> CRONJOBS
-	echo "*/5 * * * * (cd /var/www/bartlby-ui/extensions/; php automated.php username=admin password=password script=SiteManager/cron.php sync=RESTART)" >> CRONJOBS
-	echo "*/10 * * * * (cd /var/www/bartlby-ui/extensions/; php automated.php username=admin password=password script=SiteManager/cron.php sync=GENCONF)" >> CRONJOBS
-	echo "*/10 * * * * (cd /var/www/bartlby-ui/extensions/; php automated.php username=admin password=password script=SiteManager/cron.php sync=FOLDERS)" >> CRONJOBS
-	echo "0 0 * * * (cd /var/www/bartlby-ui/extensions/; php automated.php username=admin password=password script=SiteManager/cron.php sync=CLEANUP)" >> CRONJOBS
 	
-	show "registering cron jobs for autoReports";
-	echo "0 2 * * * (cd /var/www/bartlby-ui/extensions/; php automated.php username=admin password=password script=AutoReports/cron.php wich=daily)" >> CRONJOBS
-	echo "0 2 * * 7 (cd /var/www/bartlby-ui/extensions/; php automated.php username=admin password=password script=AutoReports/cron.php wich=weekly)" >> CRONJOBS
-
-	show "registering cron jobs for OcL";
-	echo "0 */1 * * * (cd /var/www/bartlby-ui/extensions/; php automated.php username=admin password=password script=OcL/cron.php)" >> CRONJOBS
-	
-	
-	cat CRONJOBS|crontab -
-
-
-
-	rm /opt/pnp4nagios/share/install.php
-
-	show "installing nagios-plugins aka monitoring-plugins"
-
-	cp /usr/lib/nagios/plugins/* /opt/bartlby-agent/plugins/
-
-
-	wget -O /opt/bartlby/populate_sample_data.php  https://raw.githubusercontent.com/Bartlby/bartlby-docker/master/populate_sample_data.php
-	cd /opt/bartlby/
-	/opt/bartlby/bin/bartlby /opt/bartlby/etc/bartlby.cfg
-	php populate_sample_data.php
-	killall -SIGUSR1 bartlby
-
-
-	chmod -v -R a+rwx /var/www/bartlby-ui
-	
+	system_upgrade
 	
 	
 	show "Congratulations your bartlby instance is up and running you have a core with all extensions"
