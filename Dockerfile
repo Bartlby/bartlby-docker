@@ -4,7 +4,7 @@ FROM debian
 #docker start bartlbycore
 
 
-##update
+##update 11
 
 ADD deploy.sh /opt/bartlby/deploy.sh
 RUN chmod +x /opt/bartlby/deploy.sh
