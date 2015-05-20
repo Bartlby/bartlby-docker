@@ -10,7 +10,7 @@ $btl = new BartlbyUI($Bartlby_CONF, false);
 
 $server_dummy = array(
                                         "server_name" => "localhost",
-                                        "server_ip" => "localhost",
+                                        "server_ip" => "127.0.0.1",
                                         "server_port" => 9030,
                                         "server_icon" => "linux.gif",
                                         "server_enabled" => 1,
