@@ -2,6 +2,7 @@
 error_reporting(0);
 chdir("/var/www/bartlby-ui/");
 include "config.php";
+include "layout.class.php";
 include "bartlby-ui.class.php";
 
 $btl = new BartlbyUI($Bartlby_CONF, false);
