@@ -3,7 +3,7 @@
 PACKAGES_REQ="python-pip python-dev git"
 
 ## 111
-#### update 1111
+#### update 1111 2222
 
 show() {
   echo -e "\n\e[1;32m>>> $1\e[00m"
