@@ -39,8 +39,8 @@ echo "added a server with a default package for active checks";
 
 $servergroup_dummy = array(
                                 "servergroup_name" => "DEFAULT",
-                                "servergroup_active" => 0,
-                                "servergroup_notify" => 0,
+                                "servergroup_active" => 1,
+                                "servergroup_notify" => 1,
                                 "enabled_triggers" => "",
                                 "servergroup_members" => "",
                                 "servergroup_dead" => 0,
@@ -49,8 +49,8 @@ $servergroup_dummy = array(
                         );
                         $servicegroup_dummy = array(
                                 "servicegroup_name" => "DEFAULT",
-                                "servicegroup_active" => 0,
-                                "servicegroup_notify" => 0,
+                                "servicegroup_active" => 1,
+                                "servicegroup_notify" => 1,
                                 "enabled_triggers" => "",
                                 "servicegroup_members" => "",
                                 "servicegroup_dead" => 0,
